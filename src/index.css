@@ -1,0 +1,334 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 
+ * ONUZ PROTOCOL DESIGN SYSTEM
+ * High-End Swiss/Architectural Industrial Aesthetic
+ */
+
+:root {
+  /* Theme System Color Tokens - Light Mode (Architectural Limestone) */
+  --bg-main: #F5F3ED;
+  --bg-surface: #FAF9F5;
+  --bg-card: #FFFFFF;
+  --bg-card-contrast: #061A1E;
+  --bg-card-subtle: #EFECE3;
+  --bg-inverse: #061A1E;
+
+  --text-main: #061A1E;
+  --text-body: #2B3A3E;
+  --text-muted: #6B7280;
+  --text-subtle: #8E8B82;
+  --text-inverse: #FFFFFF;
+
+  --border-main: #D8D4C9;
+  --border-subtle: rgba(6, 26, 30, 0.15);
+  --border-strong: #061A1E;
+
+  /* Brand Accents */
+  --accent-teal: #299093;
+  --accent-coral: #EF6156;
+  --accent-amber: #FFBD00;
+  --accent-green: #00D68F;
+
+  /* Typography tokens */
+  --font-display: 'Syne', 'Outfit', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Space Grotesk', 'JetBrains Mono', monospace;
+}
+
+/* Dark Theme (Obsidian Matrix) */
+.dark, [data-theme="dark"], html.dark {
+  --bg-main: #07090E;
+  --bg-surface: #0E121A;
+  --bg-card: #131924;
+  --bg-card-contrast: #0E121A;
+  --bg-card-subtle: #1A2232;
+  --bg-inverse: #FFFFFF;
+
+  --text-main: #FFFFFF;
+  --text-body: #D1D5DB;
+  --text-muted: #9CA3AF;
+  --text-subtle: #6B7280;
+  --text-inverse: #061A1E;
+
+  --border-main: #1F2837;
+  --border-subtle: rgba(255, 255, 255, 0.15);
+  --border-strong: #FFFFFF;
+}
+
+/* Base resets & typography */
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Display Headings */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+  letter-spacing: -0.01em;
+}
+
+/* Theme Classes */
+.theme-card {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border-color: var(--border-main);
+}
+
+.theme-card-surface {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  border-color: var(--border-main);
+}
+
+/* Responsive Navbar Rules */
+@media (max-width: 1023px) {
+  .navbar-desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .navbar-mobile-only {
+    display: none !important;
+  }
+}
+
+/* 
+ * ONUZ SIGNATURE MULTI-LAYER TRIPLE-WIPE BUTTONS
+ * Wrapped in :where() so Tailwind display utilities (hidden, flex, etc.) always override safely
+ */
+:where(.btn-onuz) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 2.75rem;
+  padding: 0 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--bg-inverse);
+  color: var(--text-inverse);
+  border: 1px solid var(--border-strong);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+}
+
+:where(.btn-onuz):active {
+  transform: scale(0.98);
+}
+
+.btn-onuz .wipe-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateX(-102%);
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.btn-onuz:hover .wipe-layer-1,
+.btn-onuz:active .wipe-layer-1 {
+  transform: translateX(0%);
+  transition-delay: 0s;
+}
+
+.btn-onuz:hover .wipe-layer-2,
+.btn-onuz:active .wipe-layer-2 {
+  transform: translateX(0%);
+  transition-delay: 0.07s;
+}
+
+.btn-onuz:hover .wipe-layer-3,
+.btn-onuz:active .wipe-layer-3 {
+  transform: translateX(0%);
+  transition-delay: 0.14s;
+}
+
+.btn-onuz .btn-content {
+  position: relative;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+/* Secondary Button */
+:where(.btn-onuz-outline) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 2.75rem;
+  padding: 0 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1.5px solid var(--border-main);
+  transition: all 0.25s ease;
+}
+
+.btn-onuz-outline .wipe-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateX(-102%);
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.btn-onuz-outline:hover .wipe-layer-1,
+.btn-onuz-outline:active .wipe-layer-1 {
+  transform: translateX(0%);
+  transition-delay: 0s;
+}
+
+.btn-onuz-outline:hover .wipe-layer-2,
+.btn-onuz-outline:active .wipe-layer-2 {
+  transform: translateX(0%);
+  transition-delay: 0.07s;
+}
+
+.btn-onuz-outline:hover .wipe-layer-3,
+.btn-onuz-outline:active .wipe-layer-3 {
+  transform: translateX(0%);
+  transition-delay: 0.14s;
+}
+
+.btn-onuz-outline:hover .btn-content,
+.btn-onuz-outline:active .btn-content {
+  color: #FFFFFF;
+}
+
+.btn-onuz-outline:hover .btn-content {
+  color: #FFFFFF;
+}
+
+.btn-onuz-outline .btn-content {
+  position: relative;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+/* 
+ * INLINE CAPSULE HEADLINE TAGS
+ */
+.headline-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.15em 0.55em;
+  line-height: 1.1;
+  vertical-align: middle;
+  transform: translateY(-0.05em);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.headline-pill:hover {
+  transform: translateY(-0.15em) scale(1.04);
+}
+
+/* Technical Status Chips */
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background-color: var(--border-subtle);
+  border: 1px solid var(--border-main);
+  color: var(--text-main);
+  transition: all 0.25s ease;
+}
+
+/* Continuous Marquee Ticker */
+@keyframes ticker-slide {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-marquee {
+  display: flex;
+  width: max-content;
+  animation: ticker-slide 28s linear infinite;
+}
+
+.ticker-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Pulse animation for station radar */
+@keyframes ping-soft {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.animate-ping-soft {
+  animation: ping-soft 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Clean Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-subtle);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-teal);
+}
