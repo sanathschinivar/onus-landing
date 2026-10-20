@@ -1,9 +1,9 @@
 import React from 'react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import ThreeDBackground from './components/layout/ThreeDBackground';
 
 import Hero from './components/sections/Hero';
+import HeroDetails from './components/sections/HeroDetails';
 import NetworksTicker from './components/sections/NetworksTicker';
 import Features from './components/sections/Features';
 import AppMockup from './components/sections/AppMockup';
@@ -25,9 +25,6 @@ export default function App() {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 selection:bg-[#EF6156] selection:text-white relative ${darkMode ? 'dark bg-[#07090E] text-white' : 'bg-[#F5F3ED] text-[#061A1E]'}`}>
-      
-      {/* Persistent 3D Interactive Spatial Background */}
-      <ThreeDBackground darkMode={darkMode} />
 
       {/* Editorial Navigation */}
       <Navbar 
@@ -41,10 +38,10 @@ export default function App() {
       {/* Main Flow */}
       <main className="relative z-10 flex flex-col">
         {/* Hero Section */}
-        <Hero 
-          onOpenWaitlist={() => handleScrollToSection('partner')}
-          onOpenPartner={() => handleScrollToSection('partner')}
-        />
+        <Hero darkMode={darkMode} />
+
+        {/* Product details enter after the scroll driven hero */}
+        <HeroDetails />
 
         {/* Connected Networks Marquee */}
         <NetworksTicker />
@@ -59,7 +56,7 @@ export default function App() {
         <DualPortals initialTab="driver" />
 
         {/* Deployment Milestones & Digital Architectural Countdown */}
-        <CountdownMilestones onOpenWaitlist={() => handleScrollToSection('partner')} />
+        <CountdownMilestones />
 
         {/* FAQ Editorial Accordion */}
         <FaqSection />

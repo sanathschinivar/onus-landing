@@ -5,15 +5,21 @@ import { useState, useEffect } from 'react';
  */
 export function useTheme() {
   const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('onuz_theme');
-    if (saved !== null) {
-      return saved === 'dark';
+    try {
+      const saved = localStorage.getItem('onuz_theme');
+      if (saved !== null) return saved === 'dark';
+    } catch {
+      // Use the operating system preference when browser storage is unavailable.
     }
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
-    localStorage.setItem('onuz_theme', darkMode ? 'dark' : 'light');
+    try {
+      localStorage.setItem('onuz_theme', darkMode ? 'dark' : 'light');
+    } catch {
+      // The theme still applies for this session if storage is unavailable.
+    }
     if (darkMode) {
       document.documentElement.classList.add('dark');
       document.body.classList.add('dark', 'dark-mode');

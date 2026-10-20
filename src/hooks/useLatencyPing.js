@@ -1,36 +1,47 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
-/**
- * Custom hook for live network ping telemetry & jitter calculation
- */
+/** Measures this page's same-origin response time; it is not an OCPI network ping. */
 export function useLatencyPing() {
-  const [latencyMs, setLatencyMs] = useState(14);
+  const [latencyMs, setLatencyMs] = useState(null);
   const [isTesting, setIsTesting] = useState(false);
+  const requestRef = useRef(null);
 
   const measureLatency = useCallback(async () => {
+    requestRef.current?.abort();
+    const controller = new AbortController();
+    requestRef.current = controller;
+    const timeout = setTimeout(() => controller.abort(), 5000);
     setIsTesting(true);
     const start = performance.now();
+
     try {
-      await fetch(window.location.origin + '/?ping=' + Date.now(), { method: 'HEAD', cache: 'no-cache' });
-      const duration = Math.max(Math.round(performance.now() - start), 6);
-      setLatencyMs(duration);
+      const response = await fetch(`${window.location.origin}/?rtt=${Date.now()}`, {
+        method: 'HEAD',
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      if (!response.ok) throw new Error(`Page ping failed: ${response.status}`);
+      if (requestRef.current === controller) {
+        setLatencyMs(Math.round(performance.now() - start));
+      }
     } catch {
-      const perfEntries = performance.getEntriesByType('navigation');
-      const measured = perfEntries.length > 0 ? Math.round(perfEntries[0].responseStart - perfEntries[0].requestStart) : 12;
-      setLatencyMs(Math.max(measured, 8));
+      if (requestRef.current === controller) {
+        setLatencyMs(null);
+      }
     } finally {
-      setTimeout(() => setIsTesting(false), 300);
+      clearTimeout(timeout);
+      if (requestRef.current === controller) {
+        requestRef.current = null;
+        setIsTesting(false);
+      }
     }
   }, []);
 
-  useEffect(() => {
-    measureLatency();
-    const interval = setInterval(() => {
-      setLatencyMs(prev => Math.max(6, Math.min(prev + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3), 32)));
-    }, 4500);
-
-    return () => clearInterval(interval);
-  }, [measureLatency]);
+  useEffect(() => () => {
+    const controller = requestRef.current;
+    requestRef.current = null;
+    controller?.abort();
+  }, []);
 
   return { latencyMs, isTesting, measureLatency };
 }

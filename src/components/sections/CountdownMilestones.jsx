@@ -2,7 +2,7 @@ import React from 'react';
 import { ROADMAP_MILESTONES } from '../../constants/data';
 import { useCountdown } from '../../hooks/useCountdown';
 
-export default function CountdownMilestones({ onOpenWaitlist }) {
+export default function CountdownMilestones() {
   // Target Launch Date: Nov 15, 2026
   const timeLeft = useCountdown('2026-11-15T00:00:00+05:30', true);
 

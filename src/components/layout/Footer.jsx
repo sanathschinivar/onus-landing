@@ -1,35 +1,40 @@
 import React, { useState } from 'react';
-import { Zap, CheckCircle2, ArrowUpRight, ArrowUp, Activity, ShieldCheck, Globe, Send, Terminal } from 'lucide-react';
+import { Zap, CheckCircle2, ArrowUp, ShieldCheck, Globe, Send, Terminal } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { submitToGoogleSheets } from '../../services/sheetsService';
 
 export default function Footer({ onOpenWaitlist, onOpenPartner }) {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [deliveryConfirmed, setDeliveryConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email || loading) return;
     setLoading(true);
+    setSubmitError('');
 
-    submitToGoogleSheets({
-      formType: 'Newsletter Protocol Dispatch (Footer)',
-      email: email,
-      timestamp: new Date().toISOString()
-    });
-
-    confetti({
-      particleCount: 60,
-      spread: 70,
-      origin: { y: 0.9 },
-      colors: ['#299093', '#EF6156', '#FFBD00', '#00D68F']
-    });
-
-    setTimeout(() => {
+    try {
+      const result = await submitToGoogleSheets({
+        formType: 'Newsletter Protocol Dispatch (Footer)',
+        email
+      });
+      if (!result.success) throw result.error;
+      setDeliveryConfirmed(result.confirmed);
       setSubscribed(true);
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        origin: { y: 0.9 },
+        colors: ['#299093', '#EF6156', '#FFBD00', '#00D68F']
+      });
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to subscribe. Please try again.');
+    } finally {
       setLoading(false);
-    }, 400);
+    }
   };
 
   const scrollToTop = () => {
@@ -78,7 +83,7 @@ export default function Footer({ onOpenWaitlist, onOpenPartner }) {
             <div className="flex flex-wrap items-center gap-3">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00D68F]/10 border border-[#00D68F]/30 text-[#00D68F] font-mono-tech text-xs">
                 <span className="w-2 h-2 rounded-full bg-[#00D68F] animate-pulse" />
-                <span>GRID DISPATCH: 99.99% HEALTH</span>
+                <span>GRID DISPATCH MODEL</span>
               </div>
 
               <button
@@ -106,17 +111,17 @@ export default function Footer({ onOpenWaitlist, onOpenPartner }) {
                 Every charger. One app. <span className="text-[#299093] dark:text-[#38b2b6]">Zero queue anxiety.</span>
               </p>
               <p className="text-sm text-[#061A1E]/75 dark:text-slate-300 leading-relaxed font-sans">
-                Universal OCPI 2.2 broker aggregating Tata Power, Zeon, Shell, ChargeZone, and Statiq into a single automated slot hold & one-tap payment engine.
+                Universal OCPI 2.2 broker aggregating Tata Power, Zeon, Shell, ChargeZone, and Statiq into a single station discovery and one-tap payment experience.
               </p>
 
               <div className="pt-2 font-mono-tech text-xs text-[#8E8B82] space-y-1.5">
-                <div className="flex items-center gap-2">
+                <div className="flex items-start gap-2">
                   <Terminal className="w-3.5 h-3.5 text-[#299093]" />
-                  <span>OCPI v2.2.1-d2 & OCPP v1.6J / 2.0.1</span>
+                  <span className="min-w-0 break-words">OCPI v2.2.1-d2 & OCPP v1.6J / 2.0.1</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-start gap-2">
                   <Globe className="w-3.5 h-3.5 text-[#EF6156]" />
-                  <span>HQ: 100 Ft Rd, Indiranagar, Bengaluru, KA 560038</span>
+                  <span className="min-w-0 break-words">HQ: 100 Ft Rd, Indiranagar, Bengaluru, KA 560038</span>
                 </div>
               </div>
             </div>
@@ -199,20 +204,20 @@ export default function Footer({ onOpenWaitlist, onOpenPartner }) {
               </p>
 
               {!subscribed ? (
-                <form onSubmit={handleSubscribe} className="space-y-2.5">
-                  <div className="flex gap-2">
+                <form onSubmit={handleSubscribe} className="space-y-2.5" aria-busy={loading}>
+                  <div className="flex flex-col gap-2 sm:flex-row">
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="driver@onuz.in"
-                      className="flex-1 px-4 py-3 rounded-full bg-[#F5F3ED] dark:bg-[#131924] border border-[#D8D4C9] dark:border-[#1F2837] text-xs text-[#061A1E] dark:text-white font-mono-tech placeholder:text-[#8E8B82] focus:outline-none focus:border-[#061A1E] dark:focus:border-white transition-colors"
+                      className="min-w-0 flex-1 px-4 py-3 rounded-full bg-[#F5F3ED] dark:bg-[#131924] border border-[#D8D4C9] dark:border-[#1F2837] text-xs text-[#061A1E] dark:text-white font-mono-tech placeholder:text-[#8E8B82] focus:outline-none focus:border-[#061A1E] dark:focus:border-white transition-colors"
                     />
                     <button 
                       type="submit" 
                       disabled={loading}
-                      className="btn-onuz px-5 h-11 text-xs group shrink-0"
+                      className="btn-onuz h-11 w-full px-5 text-xs group shrink-0 sm:w-auto"
                     >
                       <span className="wipe-layer wipe-layer-1 bg-[#299093]" />
                       <span className="wipe-layer wipe-layer-2 bg-[#EF6156]" />
@@ -228,11 +233,16 @@ export default function Footer({ onOpenWaitlist, onOpenPartner }) {
                   <p className="text-[10px] font-mono-tech text-[#8E8B82]">
                     * NO SPAM. Strictly technical release announcements & beta invites.
                   </p>
+                  {submitError && <p role="alert" className="text-sm text-[#B23A32] dark:text-[#FF8B80]">{submitError}</p>}
                 </form>
               ) : (
                 <div className="p-4 rounded-2xl bg-[#00D68F]/15 border border-[#00D68F]/30 text-xs font-mono-tech text-[#00D68F] flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 shrink-0" />
-                  <span>Subscribed successfully! Welcome to ONUZ Protocol Dispatch.</span>
+                  <span role="status">
+                    {deliveryConfirmed
+                      ? 'Your subscription request was received.'
+                      : 'Your request was dispatched, but delivery could not be confirmed in this browser.'}
+                  </span>
                 </div>
               )}
             </div>
@@ -240,14 +250,14 @@ export default function Footer({ onOpenWaitlist, onOpenPartner }) {
           </div>
 
           {/* Bottom Bar: Copyright, Compliance, Links */}
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono-tech text-xs text-[#8E8B82] dark:text-slate-400">
-            <div className="flex items-center gap-2">
+          <div className="pt-8 flex flex-col items-start justify-between gap-4 font-mono-tech text-xs text-[#8E8B82] dark:text-slate-400 sm:flex-row sm:items-center">
+            <div className="flex flex-wrap items-center gap-2">
               <span>© 2026 ONUZ PROTOCOL (onuz.in).</span>
               <span className="hidden sm:inline">•</span>
               <span>ALL RIGHTS RESERVED.</span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs">
+            <div className="flex w-full flex-wrap items-center gap-3 text-xs sm:w-auto sm:gap-6">
               <span className="text-[#061A1E] dark:text-white font-bold flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-[#00D68F]" />
                 OCPI 2.2 CERTIFIED

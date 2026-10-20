@@ -1,47 +1,63 @@
-// Google Sheets Webhook Service for ONUZ (onuz.in)
+const SHARED_WEBHOOK_URL = import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL?.trim() ?? '';
+const DRIVER_WEBHOOK_URL = import.meta.env.VITE_GOOGLE_SHEETS_DRIVER_URL?.trim() ?? '';
+const CPO_WEBHOOK_URL = import.meta.env.VITE_GOOGLE_SHEETS_CPO_URL?.trim() ?? '';
 
-export const GOOGLE_SHEETS_WEBHOOK_URL = import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL || '';
-export const GOOGLE_SHEETS_DRIVER_URL = import.meta.env.VITE_GOOGLE_SHEETS_DRIVER_URL || '';
-export const GOOGLE_SHEETS_CPO_URL = import.meta.env.VITE_GOOGLE_SHEETS_CPO_URL || '';
-
-/**
- * Submit form data to Google Sheets Webhook
- * @param {Object} payloadData - Form fields to record in Google Sheets
- */
-export async function submitToGoogleSheets(payloadData) {
-  const isCpo = payloadData.formType && payloadData.formType.toLowerCase().includes('cpo');
-  
-  // Determine target webhook URL (specific CPO/Driver URL, or fallback to single URL)
-  let targetUrl = isCpo 
-    ? (GOOGLE_SHEETS_CPO_URL || GOOGLE_SHEETS_WEBHOOK_URL)
-    : (GOOGLE_SHEETS_DRIVER_URL || GOOGLE_SHEETS_WEBHOOK_URL);
-
-  const payload = {
-    timestamp: new Date().toISOString(),
-    formattedDate: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-    targetTab: isCpo ? 'CPO Partners' : 'EV Drivers',
-    ...payloadData
-  };
-
-  console.log(`[ONUZ Submission -> ${payload.targetTab}]:`, payload);
-
-  if (!targetUrl) {
-    console.warn('[ONUZ] Google Sheets Webhook URL is not configured yet. Set VITE_GOOGLE_SHEETS_WEBHOOK_URL in .env');
-    return { success: true, simulated: true };
+function resolveWebhookUrl(isCpo) {
+  const candidate = (isCpo ? CPO_WEBHOOK_URL : DRIVER_WEBHOOK_URL) || SHARED_WEBHOOK_URL;
+  if (!candidate || /YOUR_SCRIPT_ID|PLACEHOLDER/i.test(candidate)) {
+    throw new Error('Lead capture is not configured. Please try again later.');
   }
 
+  let url;
   try {
-    await fetch(targetUrl, {
+    url = new URL(candidate);
+  } catch {
+    throw new Error('Lead capture is not configured. Please try again later.');
+  }
+
+  if (
+    url.protocol !== 'https:'
+    || url.hostname !== 'script.google.com'
+    || !/^\/macros\/s\/[^/]+\/exec\/?$/.test(url.pathname)
+  ) {
+    throw new Error('Lead capture is not configured. Please try again later.');
+  }
+
+  return url.toString();
+}
+
+/** Send a lead to the deployed Google Apps Script web app. */
+export async function submitToGoogleSheets(payloadData) {
+  const isCpo = String(payloadData.formType ?? '').toLowerCase().includes('cpo');
+  const targetTab = isCpo ? 'CPO Partners' : 'EV Drivers';
+
+  try {
+    const targetUrl = resolveWebhookUrl(isCpo);
+    const now = new Date();
+    const payload = {
+      ...payloadData,
+      timestamp: now.toISOString(),
+      formattedDate: now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      targetTab
+    };
+
+    const response = await fetch(targetUrl, {
       method: 'POST',
       mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      cache: 'no-store',
+      referrerPolicy: 'no-referrer',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
       body: JSON.stringify(payload)
     });
-    return { success: true };
+
+    // Google Apps Script responses are opaque cross-origin responses in browsers.
+    // A resolved opaque response means the browser dispatched the request, but its
+    // response body/status cannot be inspected from this static site.
+    return { success: response.type === 'opaque' || response.ok, confirmed: response.type !== 'opaque' };
   } catch (error) {
-    console.error('[ONUZ] Error submitting to Google Sheets:', error);
-    return { success: false, error };
+    return {
+      success: false,
+      error: error instanceof Error ? error : new Error('Unable to submit this request.')
+    };
   }
 }

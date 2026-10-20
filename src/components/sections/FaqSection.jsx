@@ -30,7 +30,7 @@ export default function FaqSection() {
           </div>
 
           <p className="text-base sm:text-lg text-[#061A1E]/80 dark:text-slate-300 max-w-md">
-            Everything you need to know about the ONUZ protocol, universal reservation, and CPO integrations.
+            Everything you need to know about the ONUZ protocol, station availability, and CPO integrations.
           </p>
         </div>
 
@@ -50,6 +50,8 @@ export default function FaqSection() {
                 <button
                   type="button"
                   onClick={() => toggleFaq(idx)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${faq.num}`}
                   className="w-full p-5 sm:p-8 flex items-center justify-between text-left gap-4 cursor-pointer"
                 >
                   <div className="flex items-start sm:items-center gap-3 sm:gap-6">
@@ -70,11 +72,9 @@ export default function FaqSection() {
                   </div>
                 </button>
 
-                {isOpen && (
-                  <div className="px-5 pb-5 sm:px-8 sm:pb-8 pt-0 text-xs sm:text-base text-[#061A1E]/80 dark:text-slate-300 leading-relaxed font-sans border-t border-[#D8D4C9]/40 dark:border-white/10 mt-1">
-                    <p className="pt-3 sm:pt-4">{faq.answer}</p>
-                  </div>
-                )}
+                <div id={`faq-answer-${faq.num}`} hidden={!isOpen} className="px-5 pb-5 sm:px-8 sm:pb-8 pt-0 text-xs sm:text-base text-[#061A1E]/80 dark:text-slate-300 leading-relaxed font-sans border-t border-[#D8D4C9]/40 dark:border-white/10 mt-1">
+                  <p className="pt-3 sm:pt-4">{faq.answer}</p>
+                </div>
               </div>
             );
           })}

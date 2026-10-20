@@ -6,32 +6,19 @@ export default function Features() {
   const [activeTab, setActiveTab] = useState(0);
   const activeModule = SYSTEM_MODULES[activeTab];
 
-  const [slotCountdown, setSlotCountdown] = useState(882);
   const [selectedCorridor, setSelectedCorridor] = useState('blr-mys');
   const [autoPayEnabled, setAutoPayEnabled] = useState(true);
   const [gridVoltage, setGridVoltage] = useState(415);
   const [transformerLoad, setTransformerLoad] = useState(64);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSlotCountdown(prev => (prev > 0 ? prev - 1 : 900));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
+    if (activeModule.id !== 'cpo') return undefined;
     const gridTimer = setInterval(() => {
       setGridVoltage(415 + Math.floor((Math.random() - 0.5) * 4));
       setTransformerLoad(Math.floor(62 + Math.random() * 8));
     }, 2500);
     return () => clearInterval(gridTimer);
-  }, []);
-
-  const formatSlotTime = (sec) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}m ${s < 10 ? '0' : ''}${s}s`;
-  };
+  }, [activeModule.id]);
 
   return (
     <section id="features" className="py-20 sm:py-32 border-t border-[#D8D4C9] dark:border-[#1F2837] relative">
@@ -54,7 +41,7 @@ export default function Features() {
           </div>
 
           <p className="text-base sm:text-lg text-[#061A1E]/80 dark:text-slate-300 max-w-xl">
-            We systematically solved the core friction points plaguing India's EV charging ecosystem: fragmented apps, queue jumping, and locked-in pre-paid balances.
+            We address the core friction points in India's EV charging ecosystem: fragmented apps, uncertain availability, and locked-in pre-paid balances.
           </p>
         </div>
 
@@ -66,10 +53,12 @@ export default function Features() {
             {SYSTEM_MODULES.map((mod, idx) => {
               const isActive = activeTab === idx;
               return (
-                <div
+                <button
+                  type="button"
                   key={mod.id}
                   onClick={() => setActiveTab(idx)}
-                  className={`p-5 sm:p-7 rounded-3xl border transition-all duration-300 cursor-pointer ${
+                  aria-pressed={isActive}
+                  className={`w-full text-left p-5 sm:p-7 rounded-3xl border transition-all duration-300 cursor-pointer ${
                     isActive 
                       ? 'bg-white dark:bg-[#0E121A] border-[#061A1E] dark:border-white shadow-md' 
                       : 'bg-[#FAF9F5] dark:bg-[#131924]/60 border-[#D8D4C9] dark:border-[#1F2837] opacity-80 hover:opacity-100 hover:border-[#8E8B82]'
@@ -86,7 +75,7 @@ export default function Features() {
                       {mod.tag}
                     </span>
                     <span className="text-[#8E8B82] dark:text-slate-400">
-                      [0{idx + 1} / 04]
+                      [0{idx + 1} / 03]
                     </span>
                   </div>
 
@@ -109,7 +98,7 @@ export default function Features() {
                       {isActive ? 'ACTIVE FOCUS' : 'CLICK TO VIEW'}
                     </span>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
@@ -144,32 +133,6 @@ export default function Features() {
 
             {/* Visual Simulator per Module */}
             <div className="relative z-10 p-4 sm:p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md mb-6 sm:mb-8">
-              {activeModule.previewType === 'slotLock' && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between text-xs font-mono-tech">
-                    <span className="text-slate-400">TARGET: ZEON INDIRANAGAR #GUN-02</span>
-                    <span className="text-[#00D68F] font-bold">OCPI 2.2 ACCEPTED</span>
-                  </div>
-                  
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-mono-tech">
-                      <span>RESERVATION HOLD:</span>
-                      <span className="font-bold text-[#FFBD00]">{formatSlotTime(slotCountdown)}</span>
-                    </div>
-                    <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden p-0.5">
-                      <div 
-                        className="h-full bg-gradient-to-r from-[#299093] to-[#00D68F] rounded-full transition-all duration-1000" 
-                        style={{ width: `${(slotCountdown / 900) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs font-mono-tech">
-                    <span>AUTHORIZED VEHICLE:</span>
-                    <span className="px-2 py-0.5 rounded bg-[#299093]/30 text-[#00D68F] font-bold">KA-03-EV-9021</span>
-                  </div>
-                </div>
-              )}
-
               {activeModule.previewType === 'queueRadar' && (
                 <div className="space-y-4">
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono-tech">

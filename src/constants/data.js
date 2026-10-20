@@ -96,36 +96,22 @@ export const STATIONS_DATA = [
 
 export const SYSTEM_MODULES = [
   {
-    id: 'reservation',
-    tag: 'MODULE 01',
-    accentColor: '#299093',
-    title: 'Guaranteed 15-Min Slot Hold',
-    subtitle: 'Hardware-level reservation protocol via OCPI 2.2',
-    description: 'When you are en route, ONUZ sends a handshake command directly to the physical charger terminal. The charging gun locks specifically for your vehicle registration, eliminating queue anxiety and charger hogging entirely.',
-    specs: [
-      { label: 'Hold Latency', val: '< 1.4s' },
-      { label: 'Lock Security', val: 'VIN Authenticated' },
-      { label: 'Drop Rate', val: '0.04%' }
-    ],
-    previewType: 'slotLock'
-  },
-  {
     id: 'queue',
-    tag: 'MODULE 02',
+    tag: 'MODULE 01',
     accentColor: '#EF6156',
     title: 'Predictive Queue Intelligence',
     subtitle: 'Machine-learning models predict station congestion before you arrive',
     description: 'Using real-time telemetry from connected vehicles and historical station utilization patterns, ONUZ accurately forecasts gun availability 30 to 60 minutes in advance, rerouting you away from bottlenecked hubs.',
     specs: [
-      { label: 'Forecast Accuracy', val: '99.2%' },
-      { label: 'Refresh Rate', val: 'Every 5 Sec' },
-      { label: 'Alternate Routing', val: 'Instant' }
+      { label: 'Forecast Window', val: '30–60 Min' },
+      { label: 'Demo Refresh', val: 'Illustrative' },
+      { label: 'Route Options', val: 'Nearby Hubs' }
     ],
     previewType: 'queueRadar'
   },
   {
     id: 'wallet',
-    tag: 'MODULE 03',
+    tag: 'MODULE 02',
     accentColor: '#FFBD00',
     title: 'Unified One-Tap AutoPay',
     subtitle: 'Universal billing across every Indian CPO network',
@@ -139,15 +125,15 @@ export const SYSTEM_MODULES = [
   },
   {
     id: 'cpo',
-    tag: 'MODULE 04',
+    tag: 'MODULE 03',
     accentColor: '#061A1E',
     title: 'CPO Grid Balancing & Yield AI',
     subtitle: 'Dynamic throughput optimization for charging operators',
-    description: 'For Charge Point Operators (CPOs), ONUZ acts as an automated traffic router. By balancing station loads with variable micro-incentives, we optimize gun utilization up to 3.8x while protecting localized grid transformers.',
+    description: 'For Charge Point Operators (CPOs), ONUZ is designed to help route demand across nearby hubs, improve charger utilization, and account for local grid constraints.',
     specs: [
-      { label: 'Utilization Surge', val: '+380%' },
-      { label: 'Peak Shaving', val: 'Automated' },
-      { label: 'OCPP Support', val: 'v1.6J & v2.0.1' }
+      { label: 'Optimization Focus', val: 'Utilization' },
+      { label: 'Grid Constraints', val: 'Peak Load' },
+      { label: 'Protocol Scope', val: 'OCPI / OCPP' }
     ],
     previewType: 'gridHub'
   }
@@ -185,22 +171,22 @@ export const ROADMAP_MILESTONES = [
     phase: 'PHASE 01',
     status: 'COMPLETE',
     statusColor: '#299093',
-    title: 'Core OCPI 2.2 Protocol Engine',
-    desc: 'Bilateral communication protocols established with 14 Indian CPO management systems.'
+    title: 'OCPI Integration Architecture',
+    desc: 'Protocol scope and onboarding flows defined for future charging network integrations.'
   },
   {
     phase: 'PHASE 02',
-    status: 'IN SANDBOX',
+    status: 'IN DESIGN',
     statusColor: '#FFBD00',
-    title: 'Physical Charger Gun Lock Pilot',
-    desc: 'Live 15-minute slot lock testing across 40 DC Fast hubs in Bengaluru & Delhi NCR.'
+    title: 'Station Data & Payment Pilot',
+    desc: 'Preparing station availability and payment flows for pilot validation in Bengaluru and Delhi NCR.'
   },
   {
     phase: 'PHASE 03',
-    status: 'Q3 2026',
+    status: 'NOV 2026',
     statusColor: '#EF6156',
     title: 'Public iOS & Android Store Launch',
-    desc: 'Full public rollout with guaranteed slot booking, multi-network auto-pay, and corporate billing.'
+    desc: 'Full public rollout with multi-network station discovery, auto-pay, and corporate billing.'
   }
 ];
 
@@ -208,30 +194,25 @@ export const FAQ_ITEMS = [
   {
     num: '01',
     question: "What is ONUZ and how does it solve EV charger fragmentation in India?",
-    answer: "ONUZ (meaning 'On Us') is India's premier all-in-one EV charging slot booking aggregator. Instead of downloading 10 separate apps for Zeon, Tata Power EZ Charge, Shell Recharge, and ChargeZone, ONUZ aggregates live station status, pricing, and gun availability into a single unified application via direct OCPI 2.2 protocol APIs."
+    answer: "ONUZ (meaning 'On Us') is India's all-in-one EV charging network aggregator. Instead of downloading separate apps for Zeon, Tata Power EZ Charge, Shell Recharge, and ChargeZone, ONUZ brings live station status, pricing, and gun availability into one application via OCPI 2.2 APIs."
   },
   {
     num: '02',
-    question: "How does the 15-minute Guaranteed Slot Lock physically work?",
-    answer: "When you book a slot on ONUZ while driving, our system transmits an encrypted temporary lock command to the physical charger station via OCPI/OCPP protocols. The station holds your gun for 15 minutes tied specifically to your vehicle registration number, ensuring no queue jumping occurs before you pull into the bay."
-  },
-  {
-    num: '03',
     question: "Do I need separate pre-paid wallets for different charging operators?",
     answer: "No! With ONUZ, you maintain one single wallet and account. You can pay via UPI, Credit Cards, or Auto-Debit, and receive one consolidated monthly GST tax invoice covering all your charges across all operator networks."
   },
   {
-    num: '04',
+    num: '03',
     question: "Are early waitlist members eligible for exclusive launch perks?",
-    answer: "Yes! Early adopters who join the ONUZ waitlist receive 1st charge slot reservation credits for free, priority app download links, and VIP referral rewards."
+    answer: "Yes! Early adopters who join the ONUZ waitlist receive priority app download links and VIP referral rewards."
+  },
+  {
+    num: '04',
+    question: "How can Charge Point Operators (CPOs) partner with ONUZ?",
+    answer: "CPOs can contact ONUZ to discuss connecting their network data and exploring demand routing through OCPI and OCPP integrations."
   },
   {
     num: '05',
-    question: "How can Charge Point Operators (CPOs) partner with ONUZ?",
-    answer: "CPOs can integrate their charger networks via our standard OCPI 2.2 / OCPP 1.6 enterprise APIs. Listing on ONUZ drives extra EV driver traffic to your hubs, maximizes station utilization up to 3.8x, and provides automated grid load balancing."
-  },
-  {
-    num: '06',
     question: "Which EV vehicle models are supported by ONUZ?",
     answer: "ONUZ supports all 4-wheeler and 2-wheeler electric vehicles with standard CCS2, Type 2 AC, CHAdeMO, and GB/T connectors, including Tata Nexon EV, Punch EV, MG ZS EV, Comet, Hyundai Ioniq 5, Mahindra XUV400, BYD Atto 3/Seal, Kia EV6, Ather, Ola, and more."
   }

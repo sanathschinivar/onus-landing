@@ -11,14 +11,14 @@ export default function NetworksTicker() {
         <div>
           <div className="tech-chip mb-3">
             <span className="w-2 h-2 rounded-full bg-[#299093]"></span>
-            INTEGRATED ECOSYSTEM
+            NETWORK CATALOG
           </div>
           <h3 className="text-2xl sm:text-4xl font-extrabold text-[#061A1E] dark:text-white font-['Syne']">
-            Connected Charging Networks
+          Charging Networks
           </h3>
         </div>
         <p className="font-mono-tech text-xs uppercase tracking-wider text-[#8E8B82] dark:text-slate-400">
-          [OCPI 2.2 PROTOCOL • UNIFIED SINGLE APIS]
+          [SAMPLE OPERATOR DATA • UNIFIED DISCOVERY]
         </p>
       </div>
 

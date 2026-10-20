@@ -6,13 +6,11 @@ export default function Navbar({ onOpenWaitlist, onOpenPartner, darkMode, toggle
 
   // Lock body scroll when mobile menu is active
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    if (!mobileMenuOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = previousOverflow;
     };
   }, [mobileMenuOpen]);
 
@@ -33,8 +31,10 @@ export default function Navbar({ onOpenWaitlist, onOpenPartner, darkMode, toggle
         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 h-16 sm:h-20 flex items-center justify-between">
           
           {/* Brand Monogram */}
-          <div 
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group shrink-0"
+          <button
+            type="button"
+            aria-label="ONUZ home"
+            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group shrink-0 bg-transparent border-0 p-0 text-left"
             onClick={() => {
               setMobileMenuOpen(false);
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -56,10 +56,10 @@ export default function Navbar({ onOpenWaitlist, onOpenPartner, darkMode, toggle
                 UNIVERSAL EV CHARGING
               </span>
             </div>
-          </div>
+          </button>
 
-          {/* Desktop Navigation Links (>= 1024px only) */}
-          <nav className="navbar-desktop-only hidden lg:flex items-center gap-6 xl:gap-8 font-mono-tech text-xs tracking-wider uppercase font-semibold text-[#061A1E]/80 dark:text-slate-300">
+          {/* Desktop Navigation Links (>= 1440px only) */}
+          <nav className="navbar-desktop-only hidden min-[1440px]:flex items-center gap-6 xl:gap-8 font-mono-tech text-xs tracking-wider uppercase font-semibold text-[#061A1E]/80 dark:text-slate-300">
             <a href="#overview" className="hover:text-[#299093] dark:hover:text-[#38b2b6] transition-colors py-1">
               [01] SYSTEM
             </a>
@@ -103,8 +103,8 @@ export default function Navbar({ onOpenWaitlist, onOpenPartner, darkMode, toggle
               )}
             </button>
 
-            {/* Desktop-Only Lead Buttons (>= 1024px) */}
-            <div className="navbar-desktop-only hidden lg:flex items-center gap-3">
+            {/* Desktop-Only Lead Buttons (>= 1440px) */}
+            <div className="navbar-desktop-only hidden min-[1440px]:flex items-center gap-3">
               <button
                 type="button"
                 onClick={onOpenPartner}
@@ -134,8 +134,8 @@ export default function Navbar({ onOpenWaitlist, onOpenPartner, darkMode, toggle
               </button>
             </div>
 
-            {/* Hamburger Button (Small Screens < 1024px) */}
-            <div className="navbar-mobile-only flex lg:hidden items-center">
+            {/* Hamburger Button (Small Screens < 1440px) */}
+            <div className="navbar-mobile-only flex min-[1440px]:hidden items-center">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
@@ -157,7 +157,7 @@ export default function Navbar({ onOpenWaitlist, onOpenPartner, darkMode, toggle
 
       {/* Full-Screen Mobile Drawer for Small Screens */}
       {mobileMenuOpen && (
-        <div className="navbar-mobile-only lg:hidden fixed inset-0 z-50 bg-[#F5F3ED] dark:bg-[#07090E] text-[#061A1E] dark:text-white flex flex-col justify-between p-6 sm:p-8 animate-in fade-in duration-200 overflow-y-auto">
+        <div className="navbar-mobile-only min-[1440px]:hidden fixed inset-0 z-50 bg-[#F5F3ED] dark:bg-[#07090E] text-[#061A1E] dark:text-white flex flex-col justify-between p-6 sm:p-8 animate-in fade-in duration-200 overflow-y-auto">
           
           {/* Drawer Header with Close Button */}
           <div className="flex items-center justify-between pb-6 border-b border-[#D8D4C9] dark:border-[#1F2837] shrink-0">
